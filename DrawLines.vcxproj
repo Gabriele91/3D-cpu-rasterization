@@ -69,26 +69,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BuffersContext.cpp" />
-    <ClCompile Include="Color.cpp" />
     <ClCompile Include="TimeTicks.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TRString.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Types.cpp" />
     <ClCompile Include="VectorialMath.cpp" />
     <ClCompile Include="Application.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="ApplicationIstance.h" />
     <ClInclude Include="BuffersContext.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Config.h" />
-    <ClInclude Include="TimeTicks.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimeTicks.h" />
     <ClInclude Include="TRString.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="VectorialMath.h" />
-    <ClInclude Include="ApplicationIstance.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

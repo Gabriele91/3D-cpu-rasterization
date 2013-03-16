@@ -21,12 +21,6 @@
     <ClCompile Include="BuffersContext.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="Color.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="Types.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
     <ClCompile Include="VectorialMath.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
@@ -44,34 +38,34 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BuffersContext.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="Types.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="VectorialMath.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="Config.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="TRString.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="ApplicationIstance.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="BuffersContext.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="TimeTicks.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="TRString.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorialMath.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

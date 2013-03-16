@@ -1,2 +1,0 @@
-#include "ApplicationApp.h"
-
