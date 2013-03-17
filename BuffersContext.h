@@ -12,7 +12,8 @@ namespace TinyRasterization {
 	HWND  window;
 	HDC hDC;
 	HBITMAP hBitmap;
-	BYTE *bBytes;
+	BYTE  *colorBuffer;
+	float *zbuffer;
 	uint width,hight;
 
 
@@ -21,11 +22,16 @@ namespace TinyRasterization {
 		BuffersContext(HWND  window);
 		///virtual destructor
 		virtual ~BuffersContext();
-		///virtual methods
-		void setPixel(const Color& color,uint x,uint y);
+		///color buffer
+		void  setPixel(const Color& color,uint x,uint y);
 		Color getPixel(uint x,uint y) const;	
 		void clear();
 		void clear(const Color& color);
+		///zbuffer
+		void  setZValue(float zDf,uint x,uint y);
+		float getZValue(uint x,uint y);
+		void  clearZbuffer(float v=0.0);
+
 		void swap(HDC hPaintDC);
 		
 	};

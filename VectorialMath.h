@@ -97,7 +97,7 @@ namespace TinyRasterization{
 		operator float* ()  {return &this->x;}
 		operator const float* () const {return &this->x;}
 		///////////////////////////////////////////////////////////////////////////
-		String toString(const String& start="(",const String& sep=" ",const String& end=")\n");
+		String toString(const String& start="(",const String& sep=" ",const String& end=")\n") const;
 
 	};
 	class Vector3D{
@@ -117,7 +117,7 @@ namespace TinyRasterization{
 		Vector3D(float x,float y,float z):x(x),y(y),z(z){};
 		~Vector3D(){};
 		///////////////////////////////////////////////////////////////////////////
-		DFORCEINLINE Vec2 xy(){
+		DFORCEINLINE Vec2 xy() const{
 			return Vec2(x,y);
 		}
 		///////////////////////////////////////////////////////////////////////////
@@ -205,7 +205,7 @@ namespace TinyRasterization{
 		operator float* ()  {return &this->x;}
 		operator const float* () const {return &this->x;}
 		///////////////////////////////////////////////////////////////////////////
-		String toString(const String& start="(",const String& sep=" ",const String& end=")\n");
+		String toString(const String& start="(",const String& sep=" ",const String& end=")\n") const;
 
 	};
 	class Vector4D{
@@ -226,10 +226,10 @@ namespace TinyRasterization{
 		Vector4D(const Vector3D& v,float w):x(v.x),y(v.y),z(v.z),w(w){};
 		~Vector4D(){};
 		///////////////////////////////////////////////////////////////////////////
-		DFORCEINLINE Vec2 xy(){
+		DFORCEINLINE Vec2 xy() const{
 			return Vec2(x,y);
 		}
-		DFORCEINLINE Vec3 xyz(){
+		DFORCEINLINE Vec3 xyz() const{
 			return Vec3(x,y,z);
 		}
 		///////////////////////////////////////////////////////////////////////////
@@ -324,7 +324,7 @@ namespace TinyRasterization{
 		operator float* ()  {return &this->x;}
 		operator const float* () const {return &this->x;}
 		///////////////////////////////////////////////////////////////////////////
-		String toString(const String& start="(",const String& sep=" ",const String& end=")\n");
+		String toString(const String& start="(",const String& sep=" ",const String& end=")\n") const;
 
 	};
 	class Quaternion{
@@ -362,7 +362,7 @@ namespace TinyRasterization{
 		operator float* ()  {return &this->x;}
 		operator const float* () const {return &this->x;}
 		///////////////////////////////////////////////////////////////////////////
-		String toString(const String& start="(",const String& sep=" ",const String& end=")\n");
+		String toString(const String& start="(",const String& sep=" ",const String& end=")\n") const;
 
 	};
 	class Matrix4x4{
@@ -475,7 +475,7 @@ namespace TinyRasterization{
 		operator float* ()  {return (float*)entries;}
 		operator const float* ()  {return (const float*)entries;}
 		///////////////////////////////////////////////////////////////////////////
-		String toString(const String& start="(",const String& sep=" ",const String& sepline=" ",const String& end=")\n");
+		String toString(const String& start="(",const String& sep=" ",const String& sepline=" ",const String& end=")\n") const;
 
 		};
 	class Math{

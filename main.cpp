@@ -13,12 +13,21 @@ public:
 								 480, //hight
 								 60   //fps
 								 ){}
-	
-	std::vector<Vec4> points;
-	std::vector<uint> index;
+	struct Vertex{
+		Vec3 xyz;
+		Vec2 uv;
+		Vertex(const Vec3& xyz,const Vec2& uv)
+			   :xyz(xyz)
+			   ,uv(uv){}
+			   
+	};
+	std::vector<Vertex> points;
+	std::vector<uint> lineIndex;
+	std::vector<uint> triIndex;
 
 	Vec3 alpha;
 	Vec3 mov;
+	Vec3 mov2;
 
 	//model:
 	Matrix4x4 mT;
@@ -29,54 +38,75 @@ public:
 
 	void start(){
 		
-		points.push_back(Vec4(-50 ,-50 ,-50 ,1));
-		points.push_back(Vec4(50  ,-50 ,-50 ,1));
-		points.push_back(Vec4(50  ,-50 ,50  ,1));
-		points.push_back(Vec4(-50 ,-50 ,50  ,1));
+		points.push_back(Vertex(Vec3(-50 ,0   ,0 ) ,Vec2(0,0)));
+		points.push_back(Vertex(Vec3(50  ,0   ,0 ) ,Vec2(1,0)));
+		points.push_back(Vertex(Vec3(0   ,50  ,0 ) ,Vec2(0.5,1)));
+		points.push_back(Vertex(Vec3(0   ,0   ,50) ,Vec2(0.5,1)));
 
-		points.push_back(Vec4(-50 ,50 ,-50 ,1));
-		points.push_back(Vec4(50  ,50 ,-50 ,1));
-		points.push_back(Vec4(50  ,50 ,50  ,1));
-		points.push_back(Vec4(-50 ,50 ,50  ,1));
+		//tri-line
+		lineIndex.push_back(0); lineIndex.push_back(1); 
+		lineIndex.push_back(1); lineIndex.push_back(2);
+		lineIndex.push_back(2); lineIndex.push_back(0);
+		//tri		
+		triIndex.push_back(0);
+		triIndex.push_back(1);
+		triIndex.push_back(2);	
+		//
+		triIndex.push_back(0);
+		triIndex.push_back(2);
+		triIndex.push_back(3);
+		//
+		triIndex.push_back(1);
+		triIndex.push_back(2);
+		triIndex.push_back(3);
+		//
+		triIndex.push_back(0);
+		triIndex.push_back(1);
+		triIndex.push_back(3);
+		//triangles
+		/*
+		tri.v1.xyz=Vec3(-50 ,50  ,0);
+		tri.v2.xyz=Vec3(50  ,50  ,0);
+		tri.v3.xyz=Vec3(0   ,50  ,0);
+		Vec3 vCross1=tri.v2.xyz-tri.v1.xyz;
+		Vec3 vCross2=tri.v3.xyz-tri.v1.xyz;
+		Vec3 dir=vCross1.cross(vCross2);
+		Vec3 normal=dir.getNormalize();
+		*/
 
-		//quad 1
-		index.push_back(0); index.push_back(1); 
-		index.push_back(1); index.push_back(2);
-		index.push_back(2); index.push_back(3);
-		index.push_back(3); index.push_back(0);
-		//quad 2		
-		index.push_back(4); index.push_back(5); 
-		index.push_back(5); index.push_back(6);
-		index.push_back(6); index.push_back(7);
-		index.push_back(7); index.push_back(4);
-
-		//"connects quads" 	
-		index.push_back(0); index.push_back(4); 
-		index.push_back(1); index.push_back(5);
-		index.push_back(2); index.push_back(6);
-		index.push_back(3); index.push_back(7);
 
 		//set matrix
 		proj.setPerspective(45.0f, 840.0f/480.0f ,0.1f, 10.0f);
 		mov=Vec3(0,0,200);
+		mov2=Vec3(0,0,300);
 
 	}
 
 	void update(BuffersContext *ctx,float dt){
 
-		ctx->clear();
+
 		
-		if (GetAsyncKeyState('W') & 0x8000) mov.y-=10;
-		if (GetAsyncKeyState('S') & 0x8000) mov.y+=10;
+		if (GetAsyncKeyState('W') & 0x8000) mov.y-=1;
+		if (GetAsyncKeyState('S') & 0x8000) mov.y+=1;
 		
-		if (GetAsyncKeyState('A') & 0x8000) mov.x+=10;
-		if (GetAsyncKeyState('D') & 0x8000) mov.x-=10;
+		if (GetAsyncKeyState('A') & 0x8000) mov.x+=1;
+		if (GetAsyncKeyState('D') & 0x8000) mov.x-=1;
 
 		if (GetAsyncKeyState('E') & 0x8000) mov.z+=1;
 		if (GetAsyncKeyState('C') & 0x8000) mov.z-=1;
 
 		mT.setTranslation(mov);
 		
+		if (GetAsyncKeyState(VK_PRIOR) & 0x8000) mov2.y-=1;
+		if (GetAsyncKeyState(VK_NEXT) & 0x8000) mov2.y+=1;
+		
+		if (GetAsyncKeyState(VK_LEFT) & 0x8000) mov2.x+=1;
+		if (GetAsyncKeyState(VK_RIGHT) & 0x8000) mov2.x-=1;
+
+		if (GetAsyncKeyState(VK_UP) & 0x8000) mov2.z+=1;
+		if (GetAsyncKeyState(VK_DOWN) & 0x8000) mov2.z-=1;
+		////////////////////////////////////////////////////
+
 		if (GetAsyncKeyState('T') & 0x8000) alpha.x-=1;
 		if (GetAsyncKeyState('B') & 0x8000) alpha.x+=1;
 		
@@ -90,37 +120,51 @@ public:
 		quad.setFromEulero(Math::torad(alpha.x),
 						   Math::torad(alpha.y),
 						   Math::torad(alpha.z));
-
-		//calc matrix
-		const Matrix4x4& viewModel=mT.mul(quad.getMatrix());
-		const Matrix4x4& projectViewModel=proj.mul(viewModel);
 		
-		Vec4 vClip1,vClip2;
-		Vec3 v1,v2;
-
-		//for each vertex
-		for(int i=0;i<index.size();i+=2){
-			//clip space
-			vClip1=projectViewModel.mul(points[index[i]]);
-			vClip2=projectViewModel.mul(points[index[i+1]]);
-			//div space
-			Vec3 divspace1 = vClip1.xyz()/vClip1.w;
-			Vec3 divspace2 = vClip2.xyz()/vClip2.w;
-			//window space
-			Vec2 viewWindow1=divspace1.xy()*Vec2(getWidth(),getHight())+Vec2(getWidth()/2.0,getHight()/2.0);
-			Vec2 viewWindow2=divspace2.xy()*Vec2(getWidth(),getHight())+Vec2(getWidth()/2.0,getHight()/2.0);
-			//draw
-			drawLine(ctx,Color(255,255,255,255),viewWindow1,viewWindow2);
-		}
+		Vec4 vClip1,vClip2,vClip3;	
+		
+		
+		ctx->clearZbuffer(2);
+		ctx->clear();
+		//offset triangle
+		mT.setTranslation(mov2);
+		drawModelVireWare(ctx,proj.mul(mT.mul(quad.getMatrix())),Color(255,0,0,255));
+		//draw
+		mT.setTranslation(mov);
+		drawModelVireWare(ctx,proj.mul(mT.mul(quad.getMatrix())),Color(255,0,0,255));
+		//
 
 	}
 	void end(){
 
 	}
+	void drawModelVireWare(BuffersContext *ctx,const Matrix4x4& projectViewModel,const Color& color){
+			Vec4 vClip1,vClip2,vClip3;	
+			//for each vertex		
+			for(int i=0;i<triIndex.size();i+=3){
+				//clip space
+				vClip1=projectViewModel.mul(Vec4(points[triIndex[i]].xyz,1));
+				vClip2=projectViewModel.mul(Vec4(points[triIndex[i+1]].xyz,1));
+				vClip3=projectViewModel.mul(Vec4(points[triIndex[i+2]].xyz,1));
+				//div space
+				Vec3 vDiv1 = vClip1.xyz()/vClip1.w;
+				Vec3 vDiv2 = vClip2.xyz()/vClip2.w;
+				Vec3 vDiv3 = vClip3.xyz()/vClip3.w;
+				//window space
+				Vec2 vView1=vDiv1.xy()*Vec2(getWidth(),getHight())+Vec2(getWidth()/2.0,getHight()/2.0);
+				Vec2 vView2=vDiv2.xy()*Vec2(getWidth(),getHight())+Vec2(getWidth()/2.0,getHight()/2.0);
+				Vec2 vView3=vDiv3.xy()*Vec2(getWidth(),getHight())+Vec2(getWidth()/2.0,getHight()/2.0);
+				//draw
+				drawLine(ctx,Color(0,0,255,255),vView1,vView2);
+				drawLine(ctx,Color(0,0,255,255),vView2,vView3);
+				drawLine(ctx,Color(0,0,255,255),vView3,vView1);
+			}
+	}
+	
 
 	//function
 	void drawLine(BuffersContext *ctx,
-				  const Color&& color,
+				  const Color& color,
 				  Vec2 v1,Vec2 v2){
 	 
 	  int x0=v1.x, y0=v1.y, 

@@ -45,7 +45,7 @@ Vector2D Vector2D::projected(const Vector2D& axis) const{
 	float p=((x*axis.x+y*axis.y)/(axis.x*axis.x+axis.y*axis.y));
 	return Vector2D(p*axis.x,p*axis.y);
 }
-String Vector2D::toString(const String& start,const String& sep,const String& end){
+String Vector2D::toString(const String& start,const String& sep,const String& end) const{
 	return start+String::toString(x)+sep+String::toString(y)+end;
 }
 /* VECTOR3D */
@@ -83,7 +83,7 @@ Vector3D Vector3D::getNormalize() const{
 	float d=sqrt(x*x+y*y+z*z);
 	return Vector3D(x/d,y/d,z/d);
 }
-String Vector3D::toString(const String& start,const String& sep,const String& end){
+String Vector3D::toString(const String& start,const String& sep,const String& end) const{
 	return start+String::toString(x)+sep+String::toString(y)+sep+String::toString(z)+end;
 }
 /* VECTOR4D */
@@ -117,7 +117,7 @@ Vector4D Vector4D::getNormalize() const{
 	float d=sqrt(x*x+y*y+z*z+w*w);
 	return Vector4D(x/d,y/d,z/d,w/d);
 }
-String Vector4D::toString(const String& start,const String& sep,const String& end){
+String Vector4D::toString(const String& start,const String& sep,const String& end) const{
 	return start+String::toString(x)+sep+String::toString(y)+sep+String::toString(z)+sep+String::toString(w)+end;
 }
 /* QUATERNION */
@@ -262,7 +262,7 @@ Matrix4x4 Quaternion::getMatrix(){
 				      2.0f * (xz - wy),               2.0f * (yz + wx), 1.0f - 2.0f * (x2 + y2), 0.0f,
 				      0.0f,                           0.0f,                    0.0f, 1.0f);
 }
-String Quaternion::toString(const String& start,const String& sep,const String& end){
+String Quaternion::toString(const String& start,const String& sep,const String& end) const{
 	return start+String::toString(x)+sep+String::toString(y)+sep+String::toString(z)+sep+String::toString(w)+end;
 }
 /* MATRIX4x4*/
@@ -798,7 +798,7 @@ void Matrix4x4::setPerspective(float fov, float aspect, float front, float back)
     // params: left, right, bottom, top, near, far
     setPerspective(-width, width, -height, height, front, back);
 }
-String Matrix4x4::toString(const String& start,const String& sep,const String& sepline,const String& end){
+String Matrix4x4::toString(const String& start,const String& sep,const String& sepline,const String& end) const{
 	return 	start+String::toString(entries[0])+sep +String::toString(entries[1]) +sep+String::toString(entries[2]) +sep+String::toString(entries[3]) +sepline
 		         +String::toString(entries[4])+sep +String::toString(entries[5]) +sep+String::toString(entries[6]) +sep+String::toString(entries[7]) +sepline
 		         +String::toString(entries[8])+sep +String::toString(entries[9]) +sep+String::toString(entries[10])+sep+String::toString(entries[11])+sepline
