@@ -48,6 +48,18 @@ Vector2D Vector2D::projected(const Vector2D& axis) const{
 String Vector2D::toString(const String& start,const String& sep,const String& end) const{
 	return start+String::toString(x)+sep+String::toString(y)+end;
 }
+Vector2D operator+(float v,const Vector2D& vt){
+	return Vector2D(v+vt.x,v+vt.y);
+}
+Vector2D operator-(float v,const Vector2D& vt){
+	return Vector2D(v-vt.x,v-vt.y);
+}
+Vector2D operator*(float v,const Vector2D& vt){
+	return Vector2D(v*vt.x,v*vt.y);
+} 
+Vector2D operator/(float v,const Vector2D& vt){
+	return Vector2D(v/vt.x,v/vt.y);
+}
 /* VECTOR3D */
 Vector3D Vector3D::ZERO;
 Vector3D Vector3D::ONE(1,1,1);
@@ -86,6 +98,18 @@ Vector3D Vector3D::getNormalize() const{
 String Vector3D::toString(const String& start,const String& sep,const String& end) const{
 	return start+String::toString(x)+sep+String::toString(y)+sep+String::toString(z)+end;
 }
+Vector3D operator+(float v,const Vector3D& vt){
+	return Vector3D(v+vt.x,v+vt.y,v+vt.z);
+}
+Vector3D operator-(float v,const Vector3D& vt){
+	return Vector3D(v-vt.x,v-vt.y,v-vt.z);
+}
+Vector3D operator*(float v,const Vector3D& vt){
+	return Vector3D(v*vt.x,v*vt.y,v*vt.z);
+} 
+Vector3D operator/(float v,const Vector3D& vt){
+	return Vector3D(v/vt.x,v/vt.y,v/vt.z);
+}
 /* VECTOR4D */
 Vector4D Vector4D::ZERO;
 Vector4D Vector4D::ONE(1,1,1,1);
@@ -119,6 +143,18 @@ Vector4D Vector4D::getNormalize() const{
 }
 String Vector4D::toString(const String& start,const String& sep,const String& end) const{
 	return start+String::toString(x)+sep+String::toString(y)+sep+String::toString(z)+sep+String::toString(w)+end;
+}
+Vector4D operator+(float v,const Vector4D& vt){
+	return Vector4D(v+vt.x,v+vt.y,v-vt.z,v+vt.w);
+}
+Vector4D operator-(float v,const Vector4D& vt){
+	return Vector4D(v-vt.x,v-vt.y,v-vt.z,v-vt.w);
+}
+Vector4D operator*(float v,const Vector4D& vt){
+	return Vector4D(v*vt.x,v*vt.y,v*vt.z,v*vt.w);
+} 
+Vector4D operator/(float v,const Vector4D& vt){
+	return Vector4D(v/vt.x,v/vt.y,v/vt.z,v/vt.w);
 }
 /* QUATERNION */
 Quaternion::Quaternion(){ identity(); };

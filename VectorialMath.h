@@ -100,6 +100,12 @@ namespace TinyRasterization{
 		String toString(const String& start="(",const String& sep=" ",const String& end=")\n") const;
 
 	};
+	Vector2D operator+(float v,const Vector2D& vt);
+	Vector2D operator-(float v,const Vector2D& vt);
+	Vector2D operator*(float v,const Vector2D& vt); 
+	Vector2D operator/(float v,const Vector2D& vt); 
+	///////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
 	class Vector3D{
 
 	public:
@@ -207,7 +213,13 @@ namespace TinyRasterization{
 		///////////////////////////////////////////////////////////////////////////
 		String toString(const String& start="(",const String& sep=" ",const String& end=")\n") const;
 
-	};
+	};	
+	Vector3D operator+(float v,const Vector3D& vt);
+	Vector3D operator-(float v,const Vector3D& vt);
+	Vector3D operator*(float v,const Vector3D& vt); 
+	Vector3D operator/(float v,const Vector3D& vt); 
+	///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 	class Vector4D{
 
 	public:
@@ -327,6 +339,11 @@ namespace TinyRasterization{
 		String toString(const String& start="(",const String& sep=" ",const String& end=")\n") const;
 
 	};
+	Vector4D operator+(float v,const Vector4D& vt);
+	Vector4D operator-(float v,const Vector4D& vt);
+	Vector4D operator*(float v,const Vector4D& vt); 
+	Vector4D operator/(float v,const Vector4D& vt); 
+	///////////////////////////////////////////////////////////////////////////
 	class Quaternion{
 	public:
 		float w,x,y,z;
