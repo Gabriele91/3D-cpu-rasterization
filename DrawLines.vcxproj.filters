@@ -36,6 +36,9 @@
     <ClCompile Include="TimeTicks.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="Randerer.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -66,6 +69,9 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="VectorialMath.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="Randerer.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
