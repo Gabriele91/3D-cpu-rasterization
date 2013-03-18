@@ -488,6 +488,13 @@ namespace TinyRasterization{
 		//radians and degrees
 		static DFORCEINLINE float torad(float deg) { return deg*PIOVER180; }
 		static DFORCEINLINE float todeg(float rad) { return rad*G180OVERPI; }
+		//fast swap
+		template<typename T>
+		static DFORCEINLINE void swap(T&& x,T&& y){
+			 register T temp = std::move(x);
+			 x = std::move(y);
+			 y = std::move(temp);
+		}
 		//min
 		template<typename T>
 		static DFORCEINLINE T min(T x,T y){

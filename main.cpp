@@ -63,6 +63,9 @@ public:
 		triIndex.push_back(0);
 		triIndex.push_back(1);
 		triIndex.push_back(3);
+		Vec2 a(1,2);
+		Vec2 b(3,4);
+		Math::swap(a,b);
 		//triangles
 		/*
 		tri.v1.xyz=Vec3(-50 ,50  ,0);
