@@ -57,6 +57,7 @@ public:
 		triIndex.push_back(1);
 		triIndex.push_back(2);	
 		//
+		/*
 		triIndex.push_back(0);
 		triIndex.push_back(2);
 		triIndex.push_back(3);
@@ -84,6 +85,7 @@ public:
 
 		//set matrix
 		proj.setPerspective(45.0f, 840.0f/480.0f ,0.1f, 10.0f);
+		render.setViewPort(0,0,getWidth(),getHight());
 		render.setProjection(proj);
 		mov=Vec3(0,0,200);
 		mov2=Vec3(0,0,300);
@@ -142,6 +144,7 @@ public:
 		mT.setTranslation(mov);
 		render.setModelView(mT.mul(quad.getMatrix()));
 		render.drawTriangleWireFrame(points,triIndex,Color(255,0,0,255));
+		render.drawTriangleEasy(points,triIndex,Color(255,0,0,255));
 		//
 
 	}

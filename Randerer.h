@@ -56,6 +56,7 @@ namespace TinyRasterization {
 			    hight;
 		}viewPort;
 		Vec2 window;
+		Vec2 windowSize;
 		/* ptr to BuffersContext */
 		BuffersContext *ctx;
 
@@ -71,15 +72,17 @@ namespace TinyRasterization {
 			viewPort.hight=hight;
 			window.x= (viewPort.x + 1) * viewPort.width*0.5;
 			window.y= (viewPort.y + 1) * viewPort.hight*0.5;
+			windowSize.x=viewPort.width-viewPort.x;
+			windowSize.y=viewPort.hight-viewPort.y;
 		}
 		//set model matrix
-		void setModelView(const Matrix4x4& mv){
-			modelView=mv;
+		void setModelView(const Matrix4x4& _modelView){
+			modelView=std::move(_modelView);
 			modelViewProjection=projection.mul(modelView);
-		}		
+		}
 		//set project matrix
-		void setProjection(const Matrix4x4& pj){
-			projection=pj;
+		void setProjection(const Matrix4x4& _projection){
+			projection=std::move(_projection);
 			modelViewProjection=projection.mul(modelView);
 		}
 		//
@@ -99,9 +102,9 @@ namespace TinyRasterization {
 				div2 = clip2.xyz()/clip2.w;
 				div3 = clip3.xyz()/clip3.w;
 				//window space
-				view1=div1.xy()*window;
-				view2=div2.xy()*window;
-				view3=div3.xy()*window;
+				view1=div1.xy()*windowSize+window;
+				view2=div2.xy()*windowSize+window;
+				view3=div3.xy()*windowSize+window;
 				//draw
 				drawLine(color,view1,view2);
 				drawLine(color,view2,view3);
@@ -144,14 +147,14 @@ namespace TinyRasterization {
 				div2 = clip2.xyz()/clip2.w;
 				div3 = clip3.xyz()/clip3.w;
 				//window space
-				view1=div1.xy()*window;
-				view2=div2.xy()*window;
-				view3=div3.xy()*window;
+				view1=div1.xy()*windowSize+window;
+				view2=div2.xy()*windowSize+window;
+				view3=div3.xy()*windowSize+window;
 				//draw
-				p[1].space=div1;
-				p[2].space=div1;
-				p[3].space=div1;
-				drawTriangle(p);
+				p[0].space=Vec3(clip1.xy(),div1.z);
+				p[1].space=Vec3(clip1.xy(),div2.z);
+				p[2].space=Vec3(clip2.xy(),div3.z);
+				drawTriangle(&p[0]);
 			}
 		}
 		void drawTriangle(const Vertex3D *pV /* , Texture& image */);

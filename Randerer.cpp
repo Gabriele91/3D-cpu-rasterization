@@ -46,30 +46,30 @@ Edge::Edge(const Gradients& gradients,
 	//this height
 	height=endY-y;
 	//Y error
-	float YpreStep=y-pVertices[top].space.y;
+	float yPreStep=y-pVertices[top].space.y;
 	//calc hight nd width in float
 	float realWidth=pVertices[bottom].space.x-pVertices[top].space.x;
 	float realHight=pVertices[bottom].space.y-pVertices[top].space.y;
 	//calc this X (start span)
-	x=((realWidth*YpreStep)/realHight)*pVertices[top].space.x;
+	x=((realWidth*yPreStep)/realHight)*pVertices[top].space.x;
 	//calc span line step
 	xStep=realWidth/realHight;
 	//X error
-	float XpreStep=x-pVertices[top].space.x;
+	float xPreStep=x-pVertices[top].space.x;
 	//calc 1/z [Gradients and Stap]
 	oneOverZ=gradients.oneOverZ[top]+
-		     XpreStep * gradients.dOneOverZdY +
-			 XpreStep * gradients.dOneOverZdX;
+		     yPreStep * gradients.dOneOverZdY +
+			 xPreStep * gradients.dOneOverZdX;
 	oneOverZStep=xStep* gradients.dOneOverZdX + gradients.dOneOverZdY;
 	//calc u/z [Gradients and Stap]
 	uOverZ=gradients.uOverZ[top]*
-		   XpreStep * gradients.dUOverZdY +
-		   XpreStep * gradients.dUOverZdX;
+		   yPreStep * gradients.dUOverZdY +
+		   xPreStep * gradients.dUOverZdX;
 	uOverZStep=xStep* gradients.dUOverZdX + gradients.dUOverZdY;
 	//calc v/z [Gradients and Stap]
 	vOverZ=gradients.vOverZ[top]+
-		   XpreStep * gradients.dVOverZdY +
-		   XpreStep * gradients.dVOverZdX;
+		   yPreStep * gradients.dVOverZdY +
+		   xPreStep * gradients.dVOverZdX;
 	vOverZStep=xStep* gradients.dVOverZdX + gradients.dVOverZdY;
 
 
@@ -129,7 +129,8 @@ void Randerer::drawTriangle(const Vertex3D *pV /* , Texture& image */){
 				bottom = 2;
 				middleForCompare = 3; 
 				bottomForCompare = 2;
-			} else {
+			}
+			else {
 				middle = 2; 
 				bottom = 0;
 				middleForCompare = 2; 
@@ -166,6 +167,8 @@ void Randerer::drawTriangle(const Vertex3D *pV /* , Texture& image */){
 		topToMiddle.step(); 
 		topToBottom.step();
 	}
+
+	_Height = middleToBottom.height;
 	//left or right?
 	if(middleIsLeft) {
 		pLeft = &middleToBottom;
@@ -182,8 +185,6 @@ void Randerer::drawTriangle(const Vertex3D *pV /* , Texture& image */){
 		topToBottom.step();
 	}
 }
-
-
 void Randerer::drawSpanLine(const Gradients&  Gradients,Edge *pLeft,Edge *pRight/* , Texture& image */ ){
 	//start line, ad step
 	int xStart = ceil(pLeft->x);
@@ -194,17 +195,18 @@ void Randerer::drawSpanLine(const Gradients&  Gradients,Edge *pLeft,Edge *pRight
 	float OneOverZ = pLeft->oneOverZ + xPrestep * Gradients.dOneOverZdX;
 	float UOverZ = pLeft->uOverZ + xPrestep * Gradients.dUOverZdX;
 	float VOverZ = pLeft->vOverZ + xPrestep * Gradients.dVOverZdX;
+	
 	while(_Width-- > 0)
-	{
-		//calc values
-		float Z = 1/OneOverZ;
-		int U = UOverZ * Z;
-		int V = VOverZ * Z;
-		//ctx:
-		ctx->setPixel(Color(255,U*255,V*255,255),_Width,pLeft->y);
-		//linear value update
-		OneOverZ += Gradients.dOneOverZdX;
-		UOverZ += Gradients.dUOverZdX;
-		VOverZ += Gradients.dVOverZdX;
-	}
+		{
+			//calc values
+			float Z = 1/OneOverZ;
+			int U = UOverZ * Z;
+			int V = VOverZ * Z;
+			//ctx:
+			ctx->setPixel(Color(255,U*255,V*255,255),_Width,pLeft->y);
+			//linear value update
+			OneOverZ += Gradients.dOneOverZdX;
+			UOverZ += Gradients.dUOverZdX;
+			VOverZ += Gradients.dVOverZdX;
+		}
 }
