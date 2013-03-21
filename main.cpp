@@ -44,7 +44,7 @@ public:
 	void start(){
 		
 		points.push_back(Vec3(-50 ,0   ,0 ));
-		points.push_back(Vec3(50  ,0   ,0 ));
+		points.push_back(Vec3(50  ,-20   ,0 ));
 		points.push_back(Vec3(0   ,50  ,0 ));
 		points.push_back(Vec3(0   ,0   ,50));
 

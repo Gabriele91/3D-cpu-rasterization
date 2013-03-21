@@ -25,14 +25,16 @@ namespace TinyRasterization {
 		///color buffer
 		void  setPixel(const Color& color,uint x,uint y);
 		Color getPixel(uint x,uint y) const;	
+		void zbufferToColorBuffer();
 		void clear();
 		void clear(const Color& color);
 		///zbuffer
 		void  setZValue(float zDf,uint x,uint y);
 		float getZValue(uint x,uint y);
 		void  clearZbuffer(float v=0.0);
-
+		
 		void swap(HDC hPaintDC);
+		void swap();
 		
 	};
 

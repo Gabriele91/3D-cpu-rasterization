@@ -101,7 +101,21 @@ void  BuffersContext::clearZbuffer(float v){
 	}
 	//memset(zbuffer,v,sizeof(float)*width*hight);
 }
-
+	
+void BuffersContext::zbufferToColorBuffer(){		
+	for(uint y=0;y<hight;++y){
+		for(uint x=0;x<width;++x){
+			float intens=zbuffer[(x+y*width)]<1? 1.0-zbuffer[(x+y*width)]*200:1;
+			colorBuffer[(x+y*width)*4]  =(byte)(intens*255);
+			colorBuffer[(x+y*width)*4+1]=(byte)(intens*255);
+			colorBuffer[(x+y*width)*4+2]=(byte)(intens*255);
+			colorBuffer[(x+y*width)*4+3]=(byte)(intens*255);
+		}
+	}
+}
 void BuffersContext::swap(HDC hPaintDC){		        
 		BitBlt( hPaintDC, 0, 0,width,hight, hDC, 0, 0, SRCCOPY );
+}
+void BuffersContext::swap(){		        
+		BitBlt( GetDC(window), 0, 0,width,hight, hDC, 0, 0, SRCCOPY );
 }
