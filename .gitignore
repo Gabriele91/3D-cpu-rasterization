@@ -1,4 +1,4 @@
-
+*.7z
 *.exe
 
 #mingw/gcc/g++
