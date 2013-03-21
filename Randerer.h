@@ -16,27 +16,129 @@ namespace TinyRasterization {
 		}uv;
 	};
 
-	struct Gradients{
-		Gradients(const Vertex3D* pVertices); //pass 3 Vertex3D points
-		float oneOverZ[3];				//1/z for each vertex
-		float uOverZ[3];				//u/z for each vertex
-		float vOverZ[3];				//v/z for each vertex
-		float dOneOverZdX,dOneOverZdY;	//d(1/z)/dX, d(1/z)/dY
-		float dUOverZdX,dUOverZdY;		//d(u/z)/dX, d(u/z)/dY
-		float dVOverZdX,dVOverZdY;		//d(v/z)/dX, d(v/z)/dY
+	struct Poly{
+		//point struct
+		struct {
+		    float x,y; float z,w;
+		}vt[3];
+		//normal
+		Vec3 normal;
 	};
+
 	struct Edge{
 	
-		float x,xStep;
-		float y,height;
-		float oneOverZ,oneOverZStep;
-		float uOverZ,uOverZStep;
-		float vOverZ,vOverZStep;
+		//poly:
+		Poly *p;
+		//y values
+		int top,bottom;
+		int hight;
+		float yFactor;
+		float yStep;
+		float dy;
+		//x values
+		int first;	int last;
+		float xStepDiff;
+		float xState;
+		/**
+		*  A polygon edge rapresetation
+		*
+		*  @param Poly (ponter to polygon)
+		*  @param top (index top y vertex) vt[top].y<vt[bottom].y
+		*  @param bottom (index bottom vertex) vt[top].y<vt[bottom].y
+		*/
+		Edge(Poly *p,int top,int bottom)
+			:p(p),top(top),bottom(bottom)
+		{
+			if(p->vt[top].x<p->vt[bottom].x){
+				first=top;
+				last=bottom;
+			}
+			else{
+				last=top;
+				first=bottom;		
+			}
+			/////////////////////////////
+			//        (y index, x index)
+			//
+			//
+			//   p1             (top,last)
+			//                        /|  1
+			//                       / !  2
+			//   p2 (bottom,first)  /  !  3
+			//                      1 2 3
+			//  ^ ^ ^ ^
+			//  | | | |
+			//  p1(1,3)
+			//  p2(3,1)
+			///////////////////////////////
+			//
+			//
+			// p1      (top,first)
+			//       1 |\
+			//       2 | \ 
+			// p2    3 |  \(bottom,last) 
+			//         1 2 3
+			//  ^ ^ ^ ^
+			//  | | | |
+			//  p1(1,1)
+			//  p2(3,3)
+			///////////////////////////////
+			///////////////////////////////
+			//calc y
+			hight=(int)(ceilf(p->vt[bottom].y)-floorf(p->vt[top].y));
+			//calc factors
+			//y
+			yFactor=(p->vt[bottom].y-p->vt[top].y)/(float)(hight);
+			yStep=p->vt[top].y;
+			//diff
+			dy=yStep-p->vt[top].y; //0 ndr
+			//calc diff x
+			xStepDiff=(p->vt[last].x-p->vt[first].x)/(float)(hight);
+			xState=p->vt[first].x;
+		}
 
-		Edge(const Gradients& gradients,const Vertex3D* pVertices,int top,int bottom );
-		int step();
+		DFORCEINLINE void step(){
+			//step y
+			yStep+=yFactor;
+			dy=yStep-p->vt[top].y;
+			--hight;
+			//step X
+			xState+=xStepDiff;
+		}
+
 	
 	};
+
+	struct Span{
+		
+		Poly *p;
+		Edge *e;
+		int width;
+		float x1,x2;
+		float xFactor;
+		float xStep;
+		float dx;
+		
+
+		Span(Poly *p,Edge *e,float x1,float x2)
+			:p(p),e(e),x1(x1),x2(x2){
+			//calcs
+			width=(int)(ceilf(x2)-floorf(x1));
+			xFactor=(x2-x1)/(float)(width);
+			xStep=x1;
+			dx=xStep-x1; //0 ndr
+		
+		}
+
+		DFORCEINLINE void setp(){
+			xStep+=xFactor;
+			dx=xStep-x1;
+			--width;
+		}
+
+	};
+
+
 
 	class Randerer {
 		/* Matrixs */
