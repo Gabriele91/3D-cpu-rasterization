@@ -105,7 +105,7 @@ void  BuffersContext::clearZbuffer(float v){
 void BuffersContext::zbufferToColorBuffer(){		
 	for(uint y=0;y<hight;++y){
 		for(uint x=0;x<width;++x){
-			float intens=zbuffer[(x+y*width)]<1? 1.0-zbuffer[(x+y*width)]*200:1;
+			float intens=zbuffer[(x+y*width)]==1.0f? 1.0f:zbuffer[(x+y*width)]*100;
 			colorBuffer[(x+y*width)*4]  =(byte)(intens*255);
 			colorBuffer[(x+y*width)*4+1]=(byte)(intens*255);
 			colorBuffer[(x+y*width)*4+2]=(byte)(intens*255);

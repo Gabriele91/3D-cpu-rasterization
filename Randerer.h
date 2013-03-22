@@ -11,35 +11,7 @@ namespace TinyRasterization {
 	struct Poly{
 		//point struct
 		Vec3 vt[3];
-		//normal
-		Vec3 normal;
-		//diff
-		float dzdx,dzdy;
-		float zStart;
-		//compute
-		bool compute(){
-			Vec3 //diff 1
-				 d1(vt[1].x-vt[0].x,
-				    vt[1].y-vt[0].y,
-					vt[1].z-vt[0].z),
-				 //diff 2
-				 d2(vt[2].x-vt[0].x,
-				    vt[2].y-vt[0].y,
-					vt[2].z-vt[0].z);
-			//n.b. set z=1/z (ottimization)
-			//calc normal
-			normal=d1.cross(d2);
-			if(normal.z==0) return false;
-			//calc diff:
-			// - a / c
-			dzdy= -normal.x/normal.z;
-			// - b / c
-			dzdx= -normal.y/normal.z;
-			//
-			zStart=vt[0].z-vt[0].x*dzdx-vt[0].y*dzdy;
-			//
-			return true;
-		}
+		
 	};
 
 	
@@ -159,10 +131,9 @@ namespace TinyRasterization {
 				view2=div2.xy()*windowSize+window;
 				view3=div3.xy()*windowSize+window;
 				//draw
-				poly.vt[0]=Vec3(view1,1.0f/clip1.z);
-				poly.vt[1]=Vec3(view2,1.0f/clip2.z);
-				poly.vt[2]=Vec3(view3,1.0f/clip3.z);
-				poly.compute();
+				poly.vt[0]=Vec3(view1,clip1.w);
+				poly.vt[1]=Vec3(view2,clip2.w);
+				poly.vt[2]=Vec3(view3,clip3.w);
 				drawTriangle(poly,color);
 			}
 		}
@@ -181,7 +152,33 @@ namespace TinyRasterization {
 
 		};
 
-		
+		//diff
+		//computeInterpolants
+		float computeInterpolants
+			         (float minX,
+				      float minY,
+					  const Vec3& v0,
+					  const Vec3& v1,
+					  const Vec3& v2,
+					  float& dzdx,
+					  float& dzdy){
+			float a = (v1.z - v2.z) * v0.y + (v2.z - v0.z) * v1.y + (v0.z - v1.z) * v2.y;
+			float b = v0.z * (v1.x - v2.x) + v1.z * (v2.x - v0.x) + v2.z * (v0.x - v1.x);
+			float c = v0.x * (v1.y - v2.y) + v1.x * (v2.y - v0.y) + v2.x * (v0.y - v1.y);
+			if(c==0) return 0;
+			//calc diff:
+			// - a / c
+			dzdx= -a/c;
+			// - b / c
+			dzdy= -b/c;
+			// Calculate initial value, dx and dy	(A * -minX + B * -minY -D) / C		
+			float d = - (  (v2.z * v1.y - v1.z * v2.y) * v0.x 
+				         + (v0.z * v2.y - v2.z * v0.y) * v1.x 
+					     + (v1.z * v0.y - v0.z * v1.y) * v2.x );
+
+			return (a * -minX + b * -minY - d) / c;
+			//
+		}
 
 		void drawTriangle(const Poly& poly,const Color& color){
 			//vertex y sorting:
@@ -193,6 +190,9 @@ namespace TinyRasterization {
 			}
 			// draw:
 			//from : http://www-users.mat.uni.torun.pl/~wrona/3d_tutor/tri_fillers.html
+			//and from: https://github.com/Biracun/Acun3D/blob/master/Acun3D/Rasteriser.cpp
+			//and from: http://www.acunliffe.com/2011/10/3d-software-renderer/
+			//and from: http://luki.webzdarma.cz/eng_05_en.htm
 			Vec3 start,end;
 			float dx1,dx2,dx3;
 			float ydiff;
@@ -212,6 +212,17 @@ namespace TinyRasterization {
 			else 
 				dx3=0;
 
+			//compute zbuffer:
+			float dzdx=0.0,dzdy=0.0;
+			float zstart=
+			computeInterpolants
+			       (Math::min(poly.vt[bottom].x,Math::min(poly.vt[middle].x,poly.vt[top].x)), //xstart
+					Math::min(poly.vt[bottom].y,Math::min(poly.vt[middle].y,poly.vt[top].y)), //ystart
+					Vec3(poly.vt[bottom].xy(),1.0/poly.vt[bottom].z),
+					Vec3(poly.vt[middle].xy(),1.0/poly.vt[middle].z),
+					Vec3(poly.vt[top].xy(),1.0/poly.vt[top].z),
+					dzdx,
+					dzdy);
 			//start draw
 			start=end=poly.vt[bottom];
 			//
@@ -221,27 +232,50 @@ namespace TinyRasterization {
 				ydiff=ceilf(poly.vt[middle].y-start.y);
 				while(ydiff--){
 					//span
-					for(int x=start.x;x<end.x;++x){
-						ctx->setPixel(color,x,start.y);
+					//zbuffer x
+					float zx=zstart;
+					for(int x=start.x;x<end.x;++x){	
+						if(zx<ctx->getZValue(x,start.y)){
+							ctx->setZValue(zx,x,start.y);		
+							ctx->setPixel(color,x,start.y);		
+						}				
+						//next z
+						//zx=zstart+dzdx*x;
+						zx+=dzdx;
 					}
 					++start.y;
 					++end.y;
 					start.x+=dx2;
 					end.x+=dx1;
+					//next z
+					zstart+=dzdy;
+					//ctx->zbufferToColorBuffer();
+					//ctx->swap();
 				}
 				//second triangle
 				end=poly.vt[middle];
 				ydiff=ceilf(poly.vt[top].y-start.y);
 				while(ydiff--){
 					//span
-					for(int x=start.x;x<end.x;++x){
-						ctx->setPixel(color,x,start.y);
+					//zbuffer x
+					float zx=zstart;
+					for(int x=start.x;x<end.x;++x){	
+						if(zx<ctx->getZValue(x,start.y)){
+							ctx->setZValue(zx,x,start.y);		
+							ctx->setPixel(color,x,start.y);		
+						}						
+						//next z
+						zx+=dzdx;
 					}
 					//span
 					++start.y;
 					++end.y;
 					start.x+=dx2;
 					end.x+=dx3;
+					//next z
+					zstart+=dzdy;
+					//ctx->zbufferToColorBuffer();
+					//ctx->swap();
 				}
 			} 
 			else {
@@ -249,28 +283,46 @@ namespace TinyRasterization {
 				ydiff=ceilf(poly.vt[middle].y-start.y);
 				while(ydiff--){
 					//span
-					for(int x=start.x;x<end.x;++x){
-						ctx->setPixel(color,x,start.y);
+					//zbuffer x
+					float zx=zstart;
+					for(int x=start.x;x<end.x;++x){			
+						if(zx<ctx->getZValue(x,start.y)){
+							ctx->setZValue(zx,x,start.y);		
+							ctx->setPixel(color,x,start.y);		
+						}						
+						//next z
+						zx+=dzdx;
 					}
 					//span
 					++start.y;
 					++end.y;
 					start.x+=dx1;
 					end.x+=dx2;
+					//next z
+					zstart+=dzdy;
 				}
 				//second triangle
 				start=poly.vt[middle];
 				ydiff=ceilf(poly.vt[top].y-start.y);
 				while(ydiff--){
 					//span
-					for(int x=start.x;x<end.x;++x){
-						ctx->setPixel(color,x,start.y);
+					//zbuffer x
+					float zx=zstart;
+					for(int x=start.x;x<end.x;++x){			
+						if(zx<ctx->getZValue(x,start.y)){
+							ctx->setZValue(zx,x,start.y);		
+							ctx->setPixel(color,x,start.y);		
+						}						
+						//next z
+						zx+=dzdx;
 					}
 					//span
 					++start.y;
 					++end.y;
 					start.x+=dx3;
 					end.x+=dx2;
+					//next z
+					zstart+=dzdy;
 				}
 			}
 			//end draw

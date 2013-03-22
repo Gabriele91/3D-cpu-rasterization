@@ -44,7 +44,7 @@ public:
 	void start(){
 		
 		points.push_back(Vec3(-50 ,0   ,0 ));
-		points.push_back(Vec3(50  ,-20   ,0 ));
+		points.push_back(Vec3(50  ,0   ,0 ));
 		points.push_back(Vec3(0   ,50  ,0 ));
 		points.push_back(Vec3(0   ,0   ,50));
 
@@ -53,15 +53,15 @@ public:
 		lineIndex.push_back(1); lineIndex.push_back(2);
 		lineIndex.push_back(2); lineIndex.push_back(0);
 		//tri		
-		triIndex.push_back(0);
+		triIndex.push_back(2);
 		triIndex.push_back(1);
-		triIndex.push_back(2);	
+		triIndex.push_back(0);	
 		//
 		/*
 		triIndex.push_back(0);
 		triIndex.push_back(2);
 		triIndex.push_back(3);
-		//
+		
 		triIndex.push_back(1);
 		triIndex.push_back(2);
 		triIndex.push_back(3);
@@ -69,9 +69,6 @@ public:
 		triIndex.push_back(0);
 		triIndex.push_back(1);
 		triIndex.push_back(3);
-		Vec2 a(1,2);
-		Vec2 b(3,4);
-		Math::swap(a,b);
 		/*
 		tri.v1.xyz=Vec3(-50 ,50  ,0);
 		tri.v2.xyz=Vec3(50  ,50  ,0);
@@ -89,7 +86,7 @@ public:
 		render.setProjection(proj);
 		mov=Vec3(0,0,200);
 		mov2=Vec3(0,0,300);
-
+		alpha.y=45;
 	}
 
 	void update(BuffersContext *ctx,float dt){
@@ -127,25 +124,30 @@ public:
 		if (GetAsyncKeyState('Y') & 0x8000) alpha.z+=1;
 
 
-		quad.setFromEulero(Math::torad(alpha.x),
-						   Math::torad(alpha.y),
-						   Math::torad(alpha.z));
 		
 		Vec4 vClip1,vClip2,vClip3;	
 		
 		
-		ctx->clearZbuffer(2);
+		ctx->clearZbuffer(1);
 		ctx->clear();
 		//offset triangle
+		quad.setFromEulero(Math::torad(alpha.x),
+						   Math::torad(alpha.y),
+						   Math::torad(alpha.z));
 		mT.setTranslation(mov2);
 		render.setModelView(mT.mul(quad.getMatrix()));
-		render.drawTriangleWireFrame(points,triIndex,Color(255,0,0,255));
-		//draw
-		mT.setTranslation(mov);
-		render.setModelView(mT.mul(quad.getMatrix()));
-		render.drawTriangleWireFrame(points,triIndex,Color(255,0,0,255));
 		render.drawTriangleEasy(points,triIndex,Color(255,0,0,255));
+		render.drawTriangleWireFrame(points,triIndex,Color(0,0,255,255));
+		//draw
+		mT.setTranslation(mov2);
+		quad.setFromEulero(Math::torad(alpha.x),
+						   Math::torad(alpha.y+270),
+						   Math::torad(alpha.z));
+		render.setModelView(mT.mul(quad.getMatrix()));
+		render.drawTriangleEasy(points,triIndex,Color(255,255,0,255));
+		render.drawTriangleWireFrame(points,triIndex,Color(0,255,0,255));
 		//
+		if(GetAsyncKeyState('Z')&0x8000) ctx->zbufferToColorBuffer(); 
 
 	}
 	void end(){
