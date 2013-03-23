@@ -202,7 +202,7 @@ namespace TinyRasterization {
 			//#define planeEQ(XPOS,YPOS) ((a * -XPOS + b * -YPOS - d) / c)
 			//((a * -XPOS + b * -YPOS - d) * ic)
 			#define planeEQ(XPOS,YPOS) ((a * -XPOS + b * -YPOS - d) * ic)
-			float a,b,ic,d;
+			float a,b,ic,d,zplane=0.0;
 			computeInterpolants (poly.vt[bottom],
 								 poly.vt[middle],
 								 poly.vt[top],
@@ -220,9 +220,9 @@ namespace TinyRasterization {
 				while(ydiff--){
 					//span
 					for(int x=start.x;x<end.x;++x){	
-						float zx=planeEQ(x,start.y);
-						if(zx<ctx->getZValue(x,start.y)){
-							ctx->setZValue(zx,x,start.y);		
+						zplane=planeEQ(x,start.y);
+						if(zplane<ctx->getZValue(x,start.y)){
+							ctx->setZValue(zplane,x,start.y);		
 							ctx->setPixel(color,x,start.y);		
 						}			
 					}
@@ -238,11 +238,11 @@ namespace TinyRasterization {
 					//span
 					//zbuffer x
 					for(int x=start.x;x<end.x;++x){	
-						float zx=planeEQ(x,start.y);
-						if(zx<ctx->getZValue(x,start.y)){
-							ctx->setZValue(zx,x,start.y);		
+						zplane=planeEQ(x,start.y);
+						if(zplane<ctx->getZValue(x,start.y)){
+							ctx->setZValue(zplane,x,start.y);		
 							ctx->setPixel(color,x,start.y);		
-						}
+						}			
 					}
 					//span
 					++start.y;
@@ -256,10 +256,10 @@ namespace TinyRasterization {
 				ydiff=ceilf(poly.vt[middle].y-start.y);
 				while(ydiff--){
 					//span
-					for(int x=start.x;x<end.x;++x){	
-						float zx=planeEQ(x,start.y);
-						if(zx<ctx->getZValue(x,start.y)){
-							ctx->setZValue(zx,x,start.y);		
+					for(int x=start.x;x<end.x;++x){		
+						zplane=planeEQ(x,start.y);
+						if(zplane<ctx->getZValue(x,start.y)){
+							ctx->setZValue(zplane,x,start.y);		
 							ctx->setPixel(color,x,start.y);		
 						}			
 					}
@@ -274,10 +274,10 @@ namespace TinyRasterization {
 				ydiff=ceilf(poly.vt[top].y-start.y);
 				while(ydiff--){
 					//span
-					for(int x=start.x;x<end.x;++x){	
-						float zx=planeEQ(x,start.y);
-						if(zx<ctx->getZValue(x,start.y)){
-							ctx->setZValue(zx,x,start.y);		
+					for(int x=start.x;x<end.x;++x){		
+						zplane=planeEQ(x,start.y);
+						if(zplane<ctx->getZValue(x,start.y)){
+							ctx->setZValue(zplane,x,start.y);		
 							ctx->setPixel(color,x,start.y);		
 						}			
 					}

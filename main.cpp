@@ -140,7 +140,7 @@ public:
 		//draw
 		mT.setTranslation(mov2);
 		quad.setFromEulero(Math::torad(alpha.x),
-						   Math::torad(alpha.y+270),
+						   Math::torad(alpha.y+180),
 						   Math::torad(alpha.z));
 		render.setModelView(mT.mul(quad.getMatrix()));
 		render.drawTriangleEasy(points,triIndex,Color(255,255,0,255));
