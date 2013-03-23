@@ -55,9 +55,8 @@ public:
 		//tri		
 		triIndex.push_back(2);
 		triIndex.push_back(1);
-		triIndex.push_back(0);	
+		triIndex.push_back(0);
 		//
-		/*
 		triIndex.push_back(0);
 		triIndex.push_back(2);
 		triIndex.push_back(3);
