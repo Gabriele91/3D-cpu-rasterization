@@ -9,6 +9,8 @@
 *.so.*
 
 #Visual Studio files
+.vs/**
+packages/**
 *.[Oo]bj
 *.user
 *.aps

@@ -18,25 +18,16 @@
     <ClCompile Include="main.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="BuffersContext.cpp">
+    <ClCompile Include="buffers_context.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="VectorialMath.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="TRString.cpp">
+    <ClCompile Include="string_utils.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeTicks.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="Randerer.cpp">
+    <ClCompile Include="time_utils.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,35 +35,38 @@
     <ClInclude Include="Application.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="ApplicationIstance.h">
+    <ClInclude Include="buffers_context.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="BuffersContext.h">
+    <ClInclude Include="color.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="Color.h">
+    <ClInclude Include="config.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="Config.h">
+    <ClInclude Include="time_utils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="Timer.h">
+    <ClInclude Include="string_utils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="TimeTicks.h">
+    <ClInclude Include="types.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="TRString.h">
+    <ClInclude Include="math_utils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="Types.h">
+    <ClInclude Include="randerer.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="VectorialMath.h">
+    <ClInclude Include="application_instance.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="Randerer.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include=".gitignore">
+      <Filter>File di risorse</Filter>
+    </None>
   </ItemGroup>
 </Project>
